@@ -12,6 +12,7 @@
  *
  *  \author António Rui Borges - October 1995
  */
+//Liliana Ribeiro
 
 #include <stdio.h>
 #include <sys/types.h>
