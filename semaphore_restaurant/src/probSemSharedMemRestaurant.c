@@ -109,6 +109,7 @@ int main (int argc, char *argv[])
     sh->fSt.paymentRequest = 0;
 
     sh->fSt.tableLast = -1;
+    
 
     /* create log file */
     createLog (nFic);                                  

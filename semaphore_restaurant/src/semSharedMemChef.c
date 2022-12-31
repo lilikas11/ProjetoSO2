@@ -123,11 +123,13 @@ int main(int argc, char *argv[])
 static void waitForOrder()
 {
     /* insert your code here */
-    if (semDown(semgid, sh->waitOrder) == -1) {                                                     
-        perror ("error on the down operation for waitOrder semaphore access (CH)");
-        exit (EXIT_FAILURE);
+    // proceeds when receive an order
+    if (semDown(semgid, sh->waitOrder) == -1)
+    {
+        perror("error on the down operation for waitOrder semaphore access (CH)");
+        exit(EXIT_FAILURE);
     }
-    /* end my code */
+    /* end code */
 
     if (semDown(semgid, sh->mutex) == -1)
     { /* enter critical region */
@@ -136,11 +138,11 @@ static void waitForOrder()
     }
 
     /* insert your code here */
-    sh->fSt.st.chefStat = COOK;
+    // take order from waiter and star cooking
     sh->fSt.foodOrder = 0;
+    sh->fSt.st.chefStat = COOK;
     saveState(nFic, &sh->fSt);
-    /* end my code */
-
+    /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
     { /* exit critical region */
@@ -166,6 +168,12 @@ static void processOrder()
     }
 
     /* insert your code here */
+    // signal waiter food is ready, rest, wait for an order
+    sh->fSt.foodReady = 1;
+    sh->fSt.st.chefStat = REST;
+    sh->fSt.st.chefStat = WAIT_FOR_ORDER;
+    saveState(nFic, &sh->fSt);
+    /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
     { /* exit critical region */
@@ -174,4 +182,11 @@ static void processOrder()
     }
 
     /* insert your code here */
+    // give signal to waiter to stop waiting the request
+    if (semUp(semgid, sh->waiterRequest) == -1)
+    {
+        perror("error on the up operation for waiterRequest semaphore access (CH)");
+        exit(EXIT_FAILURE);
+    }
+    /* end code */
 }
