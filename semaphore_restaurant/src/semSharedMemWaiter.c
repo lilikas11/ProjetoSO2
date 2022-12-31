@@ -203,7 +203,7 @@ static int waitForClientOrChef()
         ret = BILL;
         sh->fSt.paymentRequest = 0;
     }
-    saveState(nFic,&sh->fSt);
+    saveState(nFic, &sh->fSt);
     /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
@@ -231,6 +231,11 @@ static void informChef()
     }
 
     /* insert your code here */
+    // save status, signs that have a foodOrder
+    sh->fSt.st.waiterStat = INFORM_CHEF;
+    sh->fSt.foodOrder = 1;
+    saveState(nFic, &sh->fSt);
+    /*end code*/
 
     if (semUp(semgid, sh->mutex) == -1) /* exit critical region */
     {
@@ -239,6 +244,19 @@ static void informChef()
     }
 
     /* insert your code here */
+    // take food request to chef
+    if (semUp(semgid, sh->waitOrder) == -1)
+    {
+        perror("error on the up operation for waitOrder semaphore access (WT)");
+        exit(EXIT_FAILURE);
+    }
+    // warn clients food request was received
+    if (semUp(semgid, sh->requestReceived) == -1)
+    {
+        perror("error on the up operation for requestReceived semaphore access (WT)");
+        exit(EXIT_FAILURE);
+    }
+    /* end code */
 }
 
 /**
