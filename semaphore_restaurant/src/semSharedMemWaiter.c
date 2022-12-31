@@ -311,6 +311,7 @@ static void receivePayment()
     }
 
     /* insert your code here */
+    // update status and receive payment
     sh->fSt.st.waiterStat = RECEIVE_PAYMENT;
     sh->fSt.paymentRequest = 0;
     saveState(nFic, &sh->fSt);
