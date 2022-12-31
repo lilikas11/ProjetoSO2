@@ -275,12 +275,25 @@ static void takeFoodToTable()
     }
 
     /* insert your code here */
+    // update state
+    sh->fSt.st.waiterStat = TAKE_TO_TABLE;
+    saveState(nFic, &sh->fSt);
+    /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
     { /* exit critical region */
         perror("error on the down operation for semaphore access (WT)");
         exit(EXIT_FAILURE);
     }
+
+    /* students code */
+    // take food to table allow meal to start
+    if (semUp(semgid, sh->foodArrived) == -1)
+    {
+        perror("error on the up operation for foodArrived semaphore access (WT)");
+        exit(EXIT_FAILURE);
+    }
+    /* end code */
 }
 
 /**
