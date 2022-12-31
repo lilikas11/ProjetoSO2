@@ -203,6 +203,7 @@ static int waitForClientOrChef()
         ret = BILL;
         sh->fSt.paymentRequest = 0;
     }
+    saveState(nFic,&sh->fSt);
     /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
