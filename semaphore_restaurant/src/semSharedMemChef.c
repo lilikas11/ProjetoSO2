@@ -182,7 +182,7 @@ static void processOrder()
     }
 
     /* insert your code here */
-    // give signal to waiter to stop waiting the request
+    // give signal to waiter to stop waiting the request --> food ready
     if (semUp(semgid, sh->waiterRequest) == -1)
     {
         perror("error on the up operation for waiterRequest semaphore access (CH)");
