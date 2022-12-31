@@ -191,17 +191,14 @@ static int waitForClientOrChef()
     if (sh->fSt.foodRequest)
     {
         ret = FOODREQ;
-        sh->fSt.foodRequest = 0;
     }
     if (sh->fSt.foodReady)
     {
         ret = FOODREADY;
-        sh->fSt.foodReady = 0;
     }
     if (sh->fSt.paymentRequest)
     {
         ret = BILL;
-        sh->fSt.paymentRequest = 0;
     }
     saveState(nFic, &sh->fSt);
     /* end code */
@@ -233,6 +230,7 @@ static void informChef()
     /* insert your code here */
     // save status, signs that have a foodOrder
     sh->fSt.st.waiterStat = INFORM_CHEF;
+    sh->fSt.foodRequest = 0;
     sh->fSt.foodOrder = 1;
     saveState(nFic, &sh->fSt);
     /*end code*/
@@ -277,6 +275,7 @@ static void takeFoodToTable()
     /* insert your code here */
     // update state
     sh->fSt.st.waiterStat = TAKE_TO_TABLE;
+    sh->fSt.foodReady = 0;
     saveState(nFic, &sh->fSt);
     /* end code */
 
@@ -312,6 +311,10 @@ static void receivePayment()
     }
 
     /* insert your code here */
+    sh->fSt.st.waiterStat = RECEIVE_PAYMENT;
+    sh->fSt.paymentRequest = 0;
+    saveState(nFic, &sh->fSt);
+    /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
     { /* exit critical region */
