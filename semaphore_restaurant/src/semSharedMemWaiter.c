@@ -248,7 +248,7 @@ static void informChef()
         perror("error on the up operation for waitOrder semaphore access (WT)");
         exit(EXIT_FAILURE);
     }
-    // warn clients food request was received
+    // let clients know food request was received
     if (semUp(semgid, sh->requestReceived) == -1)
     {
         perror("error on the up operation for requestReceived semaphore access (WT)");
