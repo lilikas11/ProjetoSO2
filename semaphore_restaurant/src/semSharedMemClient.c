@@ -203,6 +203,7 @@ static bool waitFriends(int id)
     // wait for friends (last let others know)
     if (id == sh->fSt.tableLast)
     {
+        for(int i = 1; i < TABLESIZE; i++)
         if (semUp(semgid, sh->friendsArrived) == -1)
         {
             perror("error on the up operation for friendsArrived semaphore access (GR)");
@@ -291,6 +292,7 @@ static void waitFood(int id)
     /* insert your code here */
     // update state
     sh->fSt.st.clientStat[id] = WAIT_FOR_FOOD;
+    saveState(nFic, &sh->fSt);
     /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
@@ -300,6 +302,7 @@ static void waitFood(int id)
     }
 
     /* insert your code here */
+    // wait food arrive
     if (semDown(semgid, sh->foodArrived) == -1)
     { /* enter critical region */
         perror("error on the down operation for foodArived semaphore access (CT)");
@@ -314,7 +317,9 @@ static void waitFood(int id)
     }
 
     /* insert your code here */
-
+    // start eating (update state)
+    sh->fSt.st.clientStat[id] = EAT;
+    saveState(nFic, &sh->fSt);
     /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
