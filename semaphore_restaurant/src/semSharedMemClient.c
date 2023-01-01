@@ -203,12 +203,12 @@ static bool waitFriends(int id)
     // wait for friends (last let others know)
     if (id == sh->fSt.tableLast)
     {
-        for(int i = 1; i < TABLESIZE; i++)
-        if (semUp(semgid, sh->friendsArrived) == -1)
-        {
-            perror("error on the up operation for friendsArrived semaphore access (GR)");
-            exit(EXIT_FAILURE);
-        }
+        for (int i = 1; i < TABLESIZE; i++)
+            if (semUp(semgid, sh->friendsArrived) == -1)
+            {
+                perror("error on the up operation for friendsArrived semaphore access (GR)");
+                exit(EXIT_FAILURE);
+            }
     }
     else
     {
@@ -350,6 +350,11 @@ static void waitAndPay(int id)
     }
 
     /* insert your code here */
+    // update status, num persons that finished eating
+    sh->fSt.st.clientStat[id] = WAIT_FOR_OTHERS;
+    sh->fSt.tableFinishEat += 1;
+    saveState(nFic, &sh->fSt);
+    /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
     { /* enter critical region */
@@ -358,6 +363,25 @@ static void waitAndPay(int id)
     }
 
     /* insert your code here */
+    // wait everyone eating (if is the last one let other know)
+    if (sh->fSt.tableFinishEat == TABLESIZE)
+    {
+        for (int i = 1; i < TABLESIZE; i++)
+            if (semUp(semgid, sh->allFinished) == -1)
+            {
+                perror("error on the up operation for friendsArrived semaphore access (GR)");
+                exit(EXIT_FAILURE);
+            }
+    }
+    else
+    {
+        if (semDown(semgid, sh->allFinished == -1))
+        {
+            perror("error on the down operation for friendsArrived semaphore access (GR)");
+            exit(EXIT_FAILURE);
+        }
+    }
+    /* end code */
 
     if (last)
     {
@@ -368,6 +392,7 @@ static void waitAndPay(int id)
         }
 
         /* insert your code here */
+        /* end code */
 
         if (semUp(semgid, sh->mutex) == -1)
         { /* enter critical region */
@@ -376,6 +401,7 @@ static void waitAndPay(int id)
         }
 
         /* insert your code here */
+        /* end code */
     }
 
     if (semDown(semgid, sh->mutex) == -1)
@@ -385,6 +411,7 @@ static void waitAndPay(int id)
     }
 
     /* insert your code here */
+    /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
     { /* enter critical region */
