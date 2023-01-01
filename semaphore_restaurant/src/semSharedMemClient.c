@@ -381,6 +381,9 @@ static void waitAndPay(int id)
             exit(EXIT_FAILURE);
         }
     }
+
+    // a partir daqui não dei run
+    last = (id == sh->fSt.tableLast);
     /* end code */
 
     if (last)
@@ -392,6 +395,10 @@ static void waitAndPay(int id)
         }
 
         /* insert your code here */
+        // update status and flag payment
+        sh->fSt.st.clientStat[id] = WAIT_FOR_BILL;
+        sh->fSt.paymentRequest = 1;
+        saveState(nFic, &sh->fSt);
         /* end code */
 
         if (semUp(semgid, sh->mutex) == -1)
@@ -401,6 +408,12 @@ static void waitAndPay(int id)
         }
 
         /* insert your code here */
+        // wait waiter
+        if (semUp(semgid, sh->waiterRequest) == -1)
+        {
+            perror("error on the up operation for waiterRequest semaphore access (CT)");
+            exit(EXIT_FAILURE);
+        }
         /* end code */
     }
 
@@ -411,6 +424,7 @@ static void waitAndPay(int id)
     }
 
     /* insert your code here */
+    sh->fSt.st.clientStat[id] = FINISHED;
     /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
