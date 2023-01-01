@@ -242,6 +242,10 @@ static void orderFood(int id)
     }
 
     /* insert your code here */
+    // update status and request food to waiter
+    sh->fSt.st.clientStat[id] = FOOD_REQUEST;
+    sh->fSt.foodRequest = 1;
+    /*end code*/
 
     if (semUp(semgid, sh->mutex) == -1) /* exit critical region */
     {
@@ -250,6 +254,19 @@ static void orderFood(int id)
     }
 
     /* insert your code here */
+    // request food to waiter and wait waiter receive request
+    if (semUp(semgid, sh->waiterRequest) == -1)
+    {
+        perror("error on the up operation for waiterRequest semaphore access (WT)");
+        exit(EXIT_FAILURE);
+    }
+
+    if (semDown(semgid, sh->requestReceived) == -1)
+    {
+        perror("error on the down operation for requestReceived semaphore access (WT)");
+        exit(EXIT_FAILURE);
+    }
+    /* end code */
 }
 
 /**
