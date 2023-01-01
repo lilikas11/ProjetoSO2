@@ -245,6 +245,7 @@ static void orderFood(int id)
     // update status and request food to waiter
     sh->fSt.st.clientStat[id] = FOOD_REQUEST;
     sh->fSt.foodRequest = 1;
+    saveState(nFic, &sh->fSt);
     /*end code*/
 
     if (semUp(semgid, sh->mutex) == -1) /* exit critical region */
@@ -288,14 +289,23 @@ static void waitFood(int id)
     }
 
     /* insert your code here */
+    // update state
+    sh->fSt.st.clientStat[id] = WAIT_FOR_FOOD;
+    /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
     { /* enter critical region */
-        perror("error on the down operation for semaphore access (CT)");
+        perror("error on the up operation for semaphore access (CT)");
         exit(EXIT_FAILURE);
     }
 
     /* insert your code here */
+    if (semDown(semgid, sh->foodArrived) == -1)
+    { /* enter critical region */
+        perror("error on the down operation for foodArived semaphore access (CT)");
+        exit(EXIT_FAILURE);
+    }
+    /* end code */
 
     if (semDown(semgid, sh->mutex) == -1)
     { /* enter critical region */
@@ -304,6 +314,8 @@ static void waitFood(int id)
     }
 
     /* insert your code here */
+
+    /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
     { /* enter critical region */

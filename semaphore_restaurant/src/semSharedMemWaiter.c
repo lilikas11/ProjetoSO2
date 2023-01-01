@@ -200,7 +200,6 @@ static int waitForClientOrChef()
     {
         ret = BILL;
     }
-    saveState(nFic, &sh->fSt);
     /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
