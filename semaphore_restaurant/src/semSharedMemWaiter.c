@@ -286,6 +286,7 @@ static void takeFoodToTable()
 
     /* students code */
     // take food to table allow meal to start
+    for(int i = 0; i < TABLESIZE; i++)
     if (semUp(semgid, sh->foodArrived) == -1)
     {
         perror("error on the up operation for foodArrived semaphore access (WT)");
