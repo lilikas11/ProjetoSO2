@@ -425,6 +425,7 @@ static void waitAndPay(int id)
 
     /* insert your code here */
     sh->fSt.st.clientStat[id] = FINISHED;
+    saveState(nFic, &sh->fSt);
     /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)
