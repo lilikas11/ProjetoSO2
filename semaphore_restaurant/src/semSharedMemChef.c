@@ -172,8 +172,6 @@ static void processOrder()
     sh->fSt.foodReady = 1;
     sh->fSt.st.chefStat = REST;
     saveState(nFic, &sh->fSt);
-    sh->fSt.st.chefStat = WAIT_FOR_ORDER;
-    saveState(nFic, &sh->fSt);
     /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)

@@ -353,6 +353,7 @@ static void waitAndPay(int id)
     // update status, num persons that finished eating
     sh->fSt.st.clientStat[id] = WAIT_FOR_OTHERS;
     sh->fSt.tableFinishEat += 1;
+    last = (TABLESIZE == sh->fSt.tableFinishEat);
     saveState(nFic, &sh->fSt);
     /* end code */
 
@@ -364,26 +365,26 @@ static void waitAndPay(int id)
 
     /* insert your code here */
     // wait everyone eating (if is the last one let other know)
-    if (sh->fSt.tableFinishEat == TABLESIZE)
+    if (last)
     {
-        for (int i = 1; i < TABLESIZE; i++)
+        for (int j = 1; j < TABLESIZE; j++)
+        {
             if (semUp(semgid, sh->allFinished) == -1)
             {
-                perror("error on the up operation for friendsArrived semaphore access (GR)");
+                perror("error on the up operation for allFinished semaphore access (CT)");
                 exit(EXIT_FAILURE);
             }
+        }
     }
     else
     {
-        if (semDown(semgid, sh->allFinished == -1))
+        if (semDown(semgid, sh->allFinished) == -1)
         {
             perror("error on the down operation for friendsArrived semaphore access (GR)");
             exit(EXIT_FAILURE);
         }
     }
 
-    // a partir daqui não dei run
-    last = (id == sh->fSt.tableLast);
     /* end code */
 
     if (last)
@@ -396,7 +397,7 @@ static void waitAndPay(int id)
 
         /* insert your code here */
         // update status and flag payment
-        sh->fSt.st.clientStat[id] = WAIT_FOR_BILL;
+        sh->fSt.st.clientStat[sh->fSt.tableLast] = WAIT_FOR_BILL;
         sh->fSt.paymentRequest = 1;
         saveState(nFic, &sh->fSt);
         /* end code */
