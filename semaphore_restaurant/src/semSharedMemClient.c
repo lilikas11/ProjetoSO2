@@ -367,14 +367,12 @@ static void waitAndPay(int id)
     // wait everyone eating (if is the last one let other know)
     if (last)
     {
-        for (int j = 1; j < TABLESIZE; j++)
-        {
+        for (int i = 1; i < TABLESIZE; i++)
             if (semUp(semgid, sh->allFinished) == -1)
             {
                 perror("error on the up operation for allFinished semaphore access (CT)");
                 exit(EXIT_FAILURE);
             }
-        }
     }
     else
     {
@@ -415,6 +413,7 @@ static void waitAndPay(int id)
             perror("error on the up operation for waiterRequest semaphore access (CT)");
             exit(EXIT_FAILURE);
         }
+
         /* end code */
     }
 
@@ -425,8 +424,11 @@ static void waitAndPay(int id)
     }
 
     /* insert your code here */
-    sh->fSt.st.clientStat[id] = FINISHED;
-    saveState(nFic, &sh->fSt);
+    if (id != sh->fSt.tableLast)
+    {
+        sh->fSt.st.clientStat[id] = FINISHED;
+        saveState(nFic, &sh->fSt);
+    }
     /* end code */
 
     if (semUp(semgid, sh->mutex) == -1)

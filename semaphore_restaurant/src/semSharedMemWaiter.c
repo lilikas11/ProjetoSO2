@@ -286,12 +286,12 @@ static void takeFoodToTable()
 
     /* students code */
     // take food to table allow meal to start
-    for(int i = 0; i < TABLESIZE; i++)
-    if (semUp(semgid, sh->foodArrived) == -1)
-    {
-        perror("error on the up operation for foodArrived semaphore access (WT)");
-        exit(EXIT_FAILURE);
-    }
+    for (int i = 0; i < TABLESIZE; i++)
+        if (semUp(semgid, sh->foodArrived) == -1)
+        {
+            perror("error on the up operation for foodArrived semaphore access (WT)");
+            exit(EXIT_FAILURE);
+        }
     /* end code */
 }
 
@@ -313,6 +313,7 @@ static void receivePayment()
     /* insert your code here */
     // update status and receive payment
     sh->fSt.st.waiterStat = RECEIVE_PAYMENT;
+    sh->fSt.st.clientStat[sh->fSt.tableLast] = FINISHED;
     sh->fSt.paymentRequest = 0;
     saveState(nFic, &sh->fSt);
     /* end code */
@@ -322,4 +323,5 @@ static void receivePayment()
         perror("error on the down operation for semaphore access (WT)");
         exit(EXIT_FAILURE);
     }
+
 }
